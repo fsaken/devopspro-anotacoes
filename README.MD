@@ -1,5 +1,4 @@
 <h3 align="center">Repositório dedicado às anotações do curso DevOps Pro</h3>
-<h3 align="center">Repositório dedicado às anotações do curso DevOps Pro</h3>
 <p align="left">
 </p>
 <h3 align="center">Principais linguagens e ferramentas utilizadas:</h3>
