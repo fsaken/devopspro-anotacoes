@@ -1,1 +1,9 @@
-1. 
+1. Container commands{
+
+    docker container ls                                           - Lista os containeres ativos
+    docker container ls -a                                        - Lista todos os containeres 
+    docker container run <nome-imagem>                            - Inicia um container com base em uma imagem
+    docker container run --name <nome-container> <nome-imagem>    - Inicia um container com um nome especifico
+    
+
+}
