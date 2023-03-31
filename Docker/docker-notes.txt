@@ -1,9 +1,117 @@
-1. Container commands{
+1. Container basic commands{
 
-    docker container ls                                           - Lista os containeres ativos
-    docker container ls -a                                        - Lista todos os containeres 
-    docker container run <nome-imagem>                            - Inicia um container com base em uma imagem
-    docker container run --name <nome-container> <nome-imagem>    - Inicia um container com um nome especifico
+    docker container ls                                                 - Lista os containeres ativos
+    docker container ls -a                                              - Lista todos os containeres 
+    docker container run <nome-imagem>                                  - Inicia um container com base em uma imagem
+    docker container run --name <nome-container> <nome-imagem>          - Inicia um container com um nome especifico
+    docker container rm <id-container/container-name>                   - Remove um container com base no id ou nome do container
+    docker container run --name <nome-container> --rm <nome-imagem>     - Inicia e logo em seguida já apaga o container
+    docker container rm -f <id-container/container-name>                - Remove um container de forma forçada
+    docker container stop/start <id-container/container-name>           - Interrompe ou inicia a execução de um container existente
+    docker container run -it ubuntu /bin/bash                           - Inicia um container em modo interativo com a imagem do ubuntu e com o shell bash  
+    docker container run -d <nome-imagem>                               - Inicia um container em modo deamon (serviço)
+}
+
+2. Port Binding{
+
+    docker container run -d -p <lport>:<containerport> <nome-imagem> - Inicia um container realizando o port bind da porta do container para o computador local
+}   
+
+3. Executando container com variaveis de ambiente (MongoDB) {
+
+    docker container run -d -p 27017:27017  -e MONGO_INITDB_ROOT_USERNAME=mongouser -e MONGO_INITDB_ROOT_PASSWORD=mongopwd mongo - Parametro -e para declarar as váriaveis de usuário e senha
+}
+
+4. Troubleshooting {
+
+    docker container inspect <id/name-container>        - Mostra os parametros do container
+    docker container exec -it <id/name-container>       - Entra no modo interativo de um container em execução
+    docker container logs -n <id/name-container>        - Mostra as ultimas 5 linhas dos logs do container
+    docker container logs -f <id/name-container>        - Mostra em realtime os logs do container
+    docker container logs -t <id/name-container>        - Mostra a data e hora dos logs do container
+}
+
+5. Imagem com Docker Commit (não recomendado) {
+
+    1. Iniciar um container linux no modo interativo
+    2. Instalar as aplicações necessárias
+    3. docker commit <id/name-container>
+    4. docker run <nome-imagem> 
+    5. docker run ubuntu-curl-commit curl https://google.com      - Executa o container e passa um comando para ele processar e logo em seguida já interrompe
+}
+
+6. Imagem com Docker File {
+    Criação{
+
+        1. Criar o arquivo docker file com as instruções para criação da imagem
+        2. Analisar a necessidade do cache. Caso seja necessário todo build ter uma atualização de repo, concatenar os comandos do linux com &
+        3. docker image build -t gmaceu/ubuntu-curl-dockerfile:v1 .      - Build do Dockerfile utilizando de Tags ({namespace}/{repo}:{version})
+    }
+
+    Comandos{
+
+        docker image ls                         - Lista as imagens disponiveis
+        docker image prune                      - Remove as imagens sem referencia
+        docker image history <nome-imagem>      - Historico de criação de imagens
+    }
+
+    Parametros{
+        FROM       - Inicializa build de uma imagem a partir de uma imagem base
+        RUN        - Executa um comando
+        LABEL      - Adiciona metadados a imagem
+        CMD        - Define o comando e/ou parametros padrão
+        EXPOSE     - Define que o container precisa expor a porta em questão
+        ARG        - Define um argumento para ser usado no processo de construção
+        ENV        - Define váriaveis de ambiente
+        ADD        - Copia arquivos ou diretórios e adiciona ao sistema de arquivos da imagem
+        ENTRYPOINT - Ajuda você a configurar um container que pode ser executado como um executavel
+        VOLUME     - Define volumes que devem ser definidos
+        WORKDIR    - Define o seu diretório corrente
+    }
+}
+
+7. Enviar imagem para Docker Hub {
+
+    1. docker login                                         - Login com as credenciais do Docker Hub
+    2. docker tag <namespace-dhub>/<nome-imagem>:<tag>      - Cria uma nova imagem com as tags específicas
+    3. docker push <namespace-dhub>/<nome-imagem>:<tag>     - Upload da imagem para o Docker Hub
+}
+
+8. Docker Network {
+
+    Tipos{
     
+        bridge      - Comunicar os containers de forma padrão (isolado)
+        host        - Utiliza as portas do host para se comunicar (localhost do PC sem portbinding)
+        overlay     - Docker Swarm p/ comunicar varios containers
+        macvlan     - Simula um MAC Address no container
+    }
 
+    docker network create <nome>                                     - Criação de Rede
+    docker network ls                                                - Lista as redes criadas
+    docker network connect <network-name> <id/name-container>        - Ingressar um container a uma rede especifica
+    docker network disconnect <network-name> <id/name-container>     - Remove a rede especifica de um container
+    docker container run --network <network-name>                    - Parametro de network na criação de um container
+}
+
+9. Docker Volume {
+
+    Tipos {
+
+        Bind Mount - Mapeamento de diretório do container na máquina local (gerenciado pela pessoa. utilizado em containeres que necessitam de mudanças frequentes nos arquivos internos)
+        Volume     - Volume gerenciado pelo Docker deamon (uso geral)
+        tmpfs      - Diretório armazenado em memória (diretórios temporários)
+    }
+
+    docker container run -it -v "<local-path>:<remote-path>" ubuntu /bin/bash                   - Bind Mount para fazer a montagem de um diretório do container para uma pasta local na máquina
+    docker container run -it -v "$(pwd)/vol:/app" ubuntu /bin/bash                              - Bind Mount utilizando o diretório atual como referência do local path
+    
+    docker container run -it -v "<nome-volume>:<remote-path>" ubuntu /bin/bash                  - Utilização de Volume padrão do Docker
+    docker container run -it -v "volume_x:/app" ubuntu /bin/bash
+
+    docker volume inspect <nome-volume>                                                         - Inspecionar o ponto de montagem na máquina local do Volume utilizado no Container
+
+    docker container run -it --mount type=bind,src="$(pwd)/teste,dst=/app" ubuntu /bin/bash     - Bind Mount utilizando o parametro --mount
+
+    docker container run -it --mount type=volume,src="<nome-volume>",dst=/app ubuntu /bin/bash  - Volume utilizando o parametro --mount
 }
