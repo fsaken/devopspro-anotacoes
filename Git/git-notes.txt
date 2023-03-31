@@ -1,0 +1,83 @@
+1. Configurações do Git {
+
+    git config --list 
+    git config --global user.name "Gustavo Maceu"
+    git config --global user.email "gustavoyussef@outlook.com.br"
+    git config --global core.editor code
+    git config --global init.defaultBranch main
+    git init
+}
+
+2. Gerenciamento de arquivos {
+
+    git status         * valida status do repo
+    git add            * adiciona arquivos ao registro do repo (área intermediária antes do commit)
+    git reset          * remove arquivos adicionados pelo git add
+    git commit         * cria um snapshot (linha do tempo) dentro do repo com os arquivos adicionados pelo git add
+}
+
+3. Gerenciamento de commits - Checkpoint para sinalizar mudança em arquivos do repositório{
+
+    git commit -m "xxxx"       * adiciona a descrição do commit sem abrir um editor de texto
+    git commit -a -m "xxx"     * commit rápido sem a necessidade de executar o git add    TAKE CARE
+    git log                    * log de commits do repo
+    git log -p $file           * log de commits de um determinado arquivos
+    git checkout $commit_hash         * restaura um determinado commit
+    git checkout main          * restaura para o ultimo commit realizado
+    git reset --soft HEAD~1    * remove o ultimo commit mantendo o estado dos arquivos
+    git reset --hard           * remove o ultimo commit e volta o arquivo ao estado do commit anterior ao removido
+}
+
+4. Git Ignore - Arquivos a serem ignorados pelo git nos commits {
+
+    1. criar e editar o arquivo .gitignore na raiz do repo
+    2. realizar commit do arquivo .gitignore
+}
+
+5. Branches - Ramificações (features, hotfixes, fase de dev, test) {
+
+    git branch feature/text_file           * criação de uma nova branch
+    git checkout -b feature/text_file      * cria uma nova branch e já move o contexto para ela
+    git branch                             * lista as branches existentes no repo
+    git checkout feature/text_file         * altera o contexto para outra branch
+    git branch -m feature/text_file        * altera o nome da branch
+    git branch -D feature/text_file        * deleta uma branch contendo modificações
+    git branch -d feature/text_file        * deleta uma branch já "mergeada" ou vazia
+}
+
+6. Merge - Junção de branches através de um commit {
+
+    git merge feature/boom       * faz a junção da branch indicada na branch que está em contexto 
+}
+
+7. Rebase - Junção de branches movimentando os Commits de uma branch para outra (não utilizar para unificar branches principais) {
+
+    git rebase feature/boom      * faz a cópia dos commits da branch feature/boom para a que está em contexto (PORÉM, COMO NÃO HÁ UM COMMIT PARA SINALIZAR A JUNÇÃO DAS BRANCHES, O HISTÓRICO DE COMMITS FICA BAGUNÇADO)
+}
+
+8. Cherry Pick - Copiar commits para a branch em contexto (hotfixes) {
+
+    git cherry-pick $commit_hash
+}
+
+9. Git Tag - Adiciona uma Tag a um commit (Checkpoint importante) {
+
+    git tag -a vX.0 -m "Mensagem da versão"                             * adiciona uma tag no HEAD
+    git tag -a vX.0 -m "Mensagem da versão" [hash do commit]            * adiciona uma tag no commit específico
+    git tag -d vX.0                                                     * exclui a tag
+    git show vX.0                                                       * mostra o commit referente a tag de versão X
+}
+
+10. Repo Remoto - GitHub {
+
+    git push --set-upstream origin {novabranch}         * envia a nova branch pro repositório Remoto
+    git config pull.rebase false                        * configuração para realizar um merge em caso de conflitos de arquivos com conteudos diferentes no repo ao realizar o push
+
+    obs: caso tenha conflito de versões diferentes do mesmo arquivo, editar o arquivo em questão e corrigir as diferenças apontadas no arquivo
+}
+
+11. GitFetch - Trabalhar de forma mais organizada com repo local e remoto {
+
+    git fetch origin                * baixa a branch atualizada do repositório remoto
+    git diff main origin/main       * faz a comparação dos arquivos da branch local e remoto
+}
