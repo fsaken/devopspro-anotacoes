@@ -115,3 +115,8 @@
 
     docker container run -it --mount type=volume,src="<nome-volume>",dst=/app ubuntu /bin/bash  - Volume utilizando o parametro --mount
 }
+
+10. Docker Compose {
+
+    
+}
