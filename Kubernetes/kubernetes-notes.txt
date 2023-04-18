@@ -1,0 +1,20 @@
+1. Cluster Kubernetes{
+
+    Control Plane - Responsável por orquestar o cluster {
+
+        Kube Api Server
+        ETCD
+        Kube Scheduler
+        Kube Controller Manager
+    }
+
+    Nodes - Responsável por executar os containeres {
+
+        Kubelet - Responsavel por se comunicar com o Control Plane utilizando o Api Server e monitora o estado do nó
+        Kube Proxy
+        Container runtime
+    }
+
+
+    
+}
