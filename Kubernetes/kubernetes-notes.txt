@@ -20,6 +20,8 @@
 
 2. Clusters K8s no Ambiente Local {
 
+
+
     Multipass basics {
 
         multipass launch -n k8s -c 2 -m 2gb -d 20gb             -  -n=vmname | -c=cpus | -m=ram | -d=disk
@@ -62,4 +64,19 @@
 
         kind create cluster --config {path.yaml} --name {nomecluster}   - Cria um cluster se baseando em um arquivo .yaml para declarar os workers e control planes
     }
+}
+
+3. Cluster K8s aaS {
+
+    AKS - Azure Kubernetes Services {
+
+        instalar azure cli 
+
+        az login
+
+        criar cluster no portal
+
+        az aks get-credentials --resource-group {rg} --name {resource_name} --overwrite-existing        - Copia as credenciais pro arquivo do kubectl
+    }
+
 }
