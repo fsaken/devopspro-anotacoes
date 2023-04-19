@@ -1,20 +1,65 @@
-1. Cluster Kubernetes{
+1. Conceitos K8s {
 
     Control Plane - Responsável por orquestar o cluster {
 
-        Kube Api Server
-        ETCD
-        Kube Scheduler
-        Kube Controller Manager
+        Kube Api Server             - fornece uma interface de programação para usuários e componentes do Kubernetes interagirem com o cluster
+        ETCD                        - armazena o estado atual do cluster, incluindo informações sobre os recursos do Kubernetes, como pods, serviços e configurações.
+        Kube Scheduler              - atribui os pods a nós apropriados com base em requisitos de recursos e políticas de agendamento.
+        Kube Controller Manager     - gerencia os controladores do Kubernetes, que monitoram o estado dos recursos do cluster e tomam ações para manter o estado desejado.
     }
 
-    Nodes - Responsável por executar os containeres {
+    Nodes - Gerenciado pelo control plane para executar os containeres {
 
-        Kubelet - Responsavel por se comunicar com o Control Plane utilizando o Api Server e monitora o estado do nó
-        Kube Proxy
-        Container runtime
+        Kubelet                 - Responsavel por se comunicar com o Control Plane utilizando o Api Server e monitora o estado do nó
+        Kube Proxy              - gerencia o tráfego de rede para os serviços em execução nos pods.
+        Container runtime       - o software responsável por executar os contêineres, como o Docker ou o containerd.
+        Pod                     - um grupo de um ou mais contêineres que são implantados juntos em um nó e compartilham recursos, como rede e armazenamento.
+        Addons                  - componentes opcionais que podem ser implantados em cada nó, como o DNS do Kubernetes.
+    }
+}
+
+2. Clusters K8s no Ambiente Local {
+
+    Multipass basics {
+
+        multipass launch -n k8s -c 2 -m 2gb -d 20gb             -  -n=vmname | -c=cpus | -m=ram | -d=disk
+        multipass shell {vm-name}                               -  entrar no modo interativo
+        multipass exec {vm-name} -- {linux-commands}                          -  executar comandos sem entrar no shell
+        multipass mount {localpath} {vmname}:/folderonvm        -  montar um diretório local dentro da vm
+        multipass umount {vmname}                               -  desmonta o diretório linkado
+        multipass info {vmname}                                 -  informações sobre a vm
+        multipass list {vmname}                                 -  lista as vms
+        multipass delete {vmname}                               -  deleta a vm
+        multipass recover {vmname}                              -  recupera uma vm apagada
+        multipass start/stop/restart {vmname}                   -  ligar, desligar e reiniciar a vm
+        multipass purge                                         -  exclui as vms deletadas pelo multipass delete
     }
 
+    MicroK8S - Cluster K8S utilizando VMs do Multipass {
 
+        multipass exec k8s -- sudo snap install microk8s --classic --channel=1.18/stable            - Instalação do microk8s na versão 1.18
+        multipass exec k8s -- sudo usermod -a -G microk8s ubuntu                                    - Permissionando o usuário ubuntu para acessar o microk8s
+        multipass exec k8s -- sudo chown -f -R ubuntu ~/.kube                                       - Permissionando recursivamente a pasta kube na home para o ubuntu ser o dono 
+        multipass restart k8s
+
+        multipass exec k8s -- /snap/bin/microk8s.kubectl create deployment nginx --image=nginx      - Criação de deploy com imagem do nginx
+        multipass exec k8s -- /snap/bin/microk8s.kubectl get pods                                   - Lista os pods
+
+        multipass exec k8s -- /snap/bin/microk8s.kubectl config view --raw                          - Mostra as configurações do kubectl para copiar para o arquivo kubectl da máquina local para acessar remotamente o cluster (instalado anteriormente)
+
+        microk8s add-node                                                                           - Cria o comando para adicionar outro node ao cluster
+        microk8s remove-node {nodename}                                                             - Remove um node associado ao cluster
+        microk8s leave                                                                              - Desassocia o node em contexto do cluster remoto
+    }
     
+    Kind - Cluster K8S utilizando container em Docker {
+
+        choco install kind                                              - Instalar o Kind no Windows utilizando chocolatey
+        
+        kind create cluster                                             - Baixa a imagem docker e monta 1 node no cluster k8s utilizando um container
+        kind create cluster --name {nomecluster}                        - Cria o cluster com um nome especifico
+        kind delete cluster --name {nomecluster}                        - Deleta o Cluster
+
+        kind create cluster --config {path.yaml} --name {nomecluster}   - Cria um cluster se baseando em um arquivo .yaml para declarar os workers e control planes
+    }
 }
