@@ -40,7 +40,7 @@
     5. docker run ubuntu-curl-commit curl https://google.com      - Executa o container e passa um comando para ele processar e logo em seguida já interrompe
 }
 
-6. Imagem com Docker File {
+6. Imagem com DockerFile {
     Criação{
 
         1. Criar o arquivo docker file com as instruções para criação da imagem

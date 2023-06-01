@@ -43,6 +43,7 @@
     git branch -m feature/text_file        * altera o nome da branch
     git branch -D feature/text_file        * deleta uma branch contendo modificações
     git branch -d feature/text_file        * deleta uma branch já "mergeada" ou vazia
+    git push origin --delete {branch}      * deleta uma branch no repositório e realiza o push para o servidor remoto
 }
 
 6. Merge - Junção de branches através de um commit {
