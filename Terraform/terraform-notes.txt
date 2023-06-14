@@ -76,3 +76,23 @@
     terraform plan                  - realiza o plano de ação e mostra todas as criações, alterações e deleções a serem realizadas no projeto
     terraform apply                 - aplica o código e realiza as criações dentro do provider
 }
+
+3. Variable Types {
+
+    string                          - texto
+    number                          - número natural (0 até o infinito)
+    bool                            - true or false
+    list                            - array
+    map                             - dicionário de variáveis utilizando chaves
+    set                             - semelhante ao list porém sem indice para se basear na consulta utilizando função (ignora valores repetidos)
+    object                          - cria parametros e atribui a uma lista
+    tuple                           - semelhante ao object porém sem definir os parâmetros
+}
+
+4. Meta Arguments {
+
+    depends_on                      - especifica uma dependencia para que um recurso seja criado ou modificado antes de outro (ex: criar uma vnet antes de criar uma subnet)
+    count                           - estrutura de repetição (semelhante a um for ou while)
+    for_each                        - utiliza do set ou map para varrer e criar os resources
+
+}

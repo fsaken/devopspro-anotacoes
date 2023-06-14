@@ -1,0 +1,5 @@
+A configuração do cluster selecionado é: 
+
+ Região: sa-east1 
+ Número de pods: 2 
+ Backup: false

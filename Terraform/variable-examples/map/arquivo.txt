@@ -1,0 +1,1 @@
+A tipo de máquina selecionada é 4vcpu-16ram

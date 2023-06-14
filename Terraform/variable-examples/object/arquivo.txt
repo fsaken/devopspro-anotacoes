@@ -1,0 +1,5 @@
+A configuração da máquina selecionada é: 
+
+ Região: sa-east1 
+ Tipo: c2.large 
+ Backup: true

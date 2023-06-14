@@ -1,0 +1,1 @@
+A tipo de máquina selecionada é 1vcpu-4ram, 2vcpu-8ram, 4vcpu-16ram
