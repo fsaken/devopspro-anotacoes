@@ -1,4 +1,70 @@
-1. Inicio {
+1. Hashicorp Configuration Language (HCL) {
 
-    
+    1. Padrão de sintaxe
+        <BLOCK TYPE> "<BLOCK LABEL>" "<BLOCK LABEL>"{
+
+            <IDENTIFIER> = <EXPRESSION>
+        }
+
+    2. Tipos de Blocos {
+
+        1. Terraform Settings {
+
+            terraform{
+                required_version = ">1.0"                       - versão requerida do terraform para criação das Configurações
+                required_providers{                             - definição dos providers utilizados e suas versões
+
+                    digitalocean={
+                        source = "digitalocean/digitalocean"
+                        version = "2.16.0"
+                    }
+                }
+            }
+        }
+
+        2. Providers {                                          - bloco voltado para configurações dos providers
+
+            provider "digitalocean" {
+
+                token = "<token-digitalocean>"
+            }
+        }
+
+        3. Resources {                                         - bloco voltado para administração de recursos nos providers
+
+            resource "digitalocean_droplet" "vm_lab_tf" {      - nome do tipo de recurso do provider seguido pelo nome dado ao recurso
+
+                image = "ubuntu-20-04-x64"
+                name = "vm-lab-tf"
+                region = "nyc1"
+                size = "s-1vcpu-2gb"
+            }
+        }
+
+        4. Data sources {                                       - bloco utilizado para linkar recursos já criados e referenciar eles dentro do terraform
+
+            data "digitalocean_ssh_key" "nova_key" {
+
+                name = "aula"
+            }
+        }
+
+        5. Variables {                                          - bloco utilizado para criar variáveis e reutilizar em novos recursos
+
+            variable "regiao" {
+                type = string
+                default = "nyc1"
+                description = "Região de uso na Digital Ocean"
+            }
+        }
+
+        6. Outputs {                                            - bloco utilizado para gerar saída de parametros de recursos do projeto
+
+            output "droplet_ip"{
+                value = digitalocean_droplet.vm_lab_tf.ipv4_address 
+            }
+        }
+    }
+
 }
+
