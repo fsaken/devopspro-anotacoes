@@ -60,11 +60,19 @@
 
         6. Outputs {                                            - bloco utilizado para gerar saída de parametros de recursos do projeto
 
-            output "droplet_ip"{
-                value = digitalocean_droplet.vm_lab_tf.ipv4_address 
+            output "gmaceu_wordpress_A"{
+                value = {tipo-de-recurso}.{nome-do-recurso}.{parametro}  
             }
         }
     }
 
 }
 
+2. Basic Commands {
+
+    terraform init                  - inicializa o projeto baixando todos as configurações necessárias
+    terraform fmt                   - formata e indenta todo o código
+    terraform validate              - valida o código 
+    terraform plan                  - realiza o plano de ação e mostra todas as criações, alterações e deleções a serem realizadas no projeto
+    terraform apply                 - aplica o código e realiza as criações dentro do provider
+}
