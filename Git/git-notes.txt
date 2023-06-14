@@ -82,3 +82,9 @@
     git fetch origin                * baixa a branch atualizada do repositório remoto
     git diff main origin/main       * faz a comparação dos arquivos da branch local e remoto
 }
+
+12. Unstage and remove files from repo {
+
+    git reset {file-name}           - realiza o unstage do arquivo
+    git rm --cached {file-name}     - remove o arquivo do repositório
+}
