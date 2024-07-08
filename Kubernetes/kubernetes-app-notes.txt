@@ -9,5 +9,126 @@
 2. k3d complete setup {
 
     k3d cluster create {cluster-name} --servers {x} --agents {x}        - Criação de um cluster apontando a quantidade de Control Planes (servers) e worker nodes (agents)
-    > -p "8080:30000@loadbalancer"                                      - Adição de um bind port da 8080 para o loadbalancer nativo do k3d na porta padrão    
+    -> -p "8080:30000@loadbalancer"                                     - Adição de um bind port da 8080 para o loadbalancer nativo do k3d na porta padrão    
+}
+ 
+
+3. k8s basics {
+
+    objetos {
+        
+        pod {
+
+            - Menor objeto do cluster k8s onde são executados os containers (podem ser executados 1 ou mais dentro de um mesmo pod)
+            - IP compartilhado para os containers dentro do pod
+            - É possível ter um sistema de arquivos compartilhado entre os containers
+            - O pod é o componente principal da escalabilidade do k8s, então via de regra um pod vai ter apenas um container principal
+            - A excessão da linha acima seria a adição de outro container no POD para exercer uma função auxiliar ao container principal (Sidecar Containers) Ex: redirecionamento de rede ou coleta de logs
+            - Um pod criado individualmente sem um replicaset associado é um naked pod, onde caso ele seja deletado ou dê algum problema no node onde ele está sendo executado, não será recriado outro pod
+
+        }
+
+        labels selector{
+
+            - Labels   = Tags associadas aos recursos
+            - Selector = Utiliza das labels para apontar objetos específicos numa declaração. Ex.: Replicaset de pod baseado numa label de versionamento 
+        }
+
+        replicaset {
+
+            - Objeto responsável por escalar outros objetos dentro do cluster
+            - Monitora os objetos e remove ou cria novas réplicas baseado no que está setado
+            - Aplicar mudanças no replicaset não faz com que seja recriado os objetos (apenas excluindo os antigos)
+            > Nesse caso é necessário o Deployment para realizar esse processo de alterações 
+        } 
+
+        deployment {
+
+            - Fica em uma camada acima do replicaset
+            - Realiza a criação da nova versão do objeto e recria gradualmente os pods 
+            - A estrutura do deployment no manifesto é igual ao do replicaset!!
+            - É possível realizar o rollback de um deploy com kubectl rollout
+        }
+
+        service {
+
+            - Ponto de entrada de comunicação para os pods
+
+            Tipos {
+
+                ClusterIP       - Expõe os pods internamente dentro do Cluster. Ex.: Comunicação entre aplicações
+                Nodeport        - Expõe externamente os pods para fora do kubernetes. Elege uma porta aleatória entre 30000 e 32767 e associa ela aos nodes para expor esse serviço para fora 
+                Loadbalance     - Cria um load balancer atrás do service de NodePort e associa um IP publico (Utilizado apenas em Kubernetes gerenciado por cloud provider)
+                External name   - Um serviço para acessar outros serviços. Pode associar um dominio ou nome para identificar o serviço (Ex.: DB address)
+            }
+
+        }
+
+
+
+    }
+
+    manifesto {
+
+        - Declaração em yaml para criação ou atualização de objetos no cluster
+        - É possível criar mais de um manifesto dentro do mesmo arquivo, delimitando com --- no final de cada um
+        - 4 principais campos no arquivo {
+
+            apiVersion - versionamento de objetos (consultar no kubectl api-resources)
+            kind       - tipo de objeto listado no api-resources como NAME. Ex.: pods, nodes, replicasets
+            metadata   - metadados do objeto. Ex.: name
+            spec       - o que será declarado no objeto. Ex.: num pod será declarado os containers, seus nomes, imagem
+        }
+    }
+
+
+    kubectl {
+        basics{
+
+            kubectl get all                                                     - Mostra todos os objetos do cluster
+            kubectl get {object-type}                                           - Visão específica de objetos no cluster. Ex.: pods, nodes, replicasets (pode ser declarado pelo short name)
+            kubectl apply -f {file-name}                                        - Cria recursos ou aplica mudanças baseado em um arquivo
+            kubectl describe {object-type} {object name}                        - Mostra uma descrição detalhada do objeto 
+            kubectl port-forward pod/{pod-name} {local-port}:{container-port}   - Redireciona a porta de um pod para a máquina local
+            kubectl get {obj-type} {obj-name} -o wide                           - informações detalhadas sobre um objeto      
+            kubectl delete -f {file-name}                                       - Deleta os objetos que estão declarados em um arquivo específico
+        }
+        
+        label selector {
+
+            kubectl {xxx} -l {label-name}={label-value}                   - Executa o comando baseado nas labels associadas a um objeto
+
+            Ex.: kubectl get pods -l version=2.1,env="Producao"
+        } 
+
+        rollout {
+
+                kubectl rollout history {obj-type} {obj-name}               - Mostra um histórico de mudanças em um objeto 
+                kubectl rollout undo {obj-type} {obj-name}                  - Realiza um rollback para a versão anterior 
+                kubectl rollout undo {obj-type} {obj-name} --to-revision=0  - Realiza um rollback para a versão anterior
+        }
+
+        troubleshooting com naked pod {
+
+            kubectl run {pod-name} --rm -it --image ubuntu -- /bin/bash          - Cria um pod baseado em uma imagem e já entra no modo interativo via shell
+            
+            - Dentro de um naked pod, é possível utilizar o nome do service como ponto de entrada para troubleshooting pois o mesmo resolve via DNS
+
+            Exemplo dentro do naked pod: curl http://{svc-name}             - É uma boa prática sempre apontar para o service no lugar do IP do pod 
+
+        }
+
+        endpoint {
+
+            - Método para identificar a associação de um endpoint aos pods. Útil para validar se os pods estão sendo associados ao serviço corretamente
+
+            kubectl get endpoints
+
+            - Endpoint slice será útil em um caso onde há muitos pods e é necessário quebrar os endpoints em grupos de array diferentes para identificar se há problemas de conectividade dos pods com os serviços
+
+            kubectl get endpoinslices
+        }
+    }
+    
+
 }
