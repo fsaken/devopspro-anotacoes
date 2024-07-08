@@ -1,0 +1,13 @@
+1.  k3d basics {
+
+    k3d cluster create                              - Criação default de um cluster de kubernetes (com lb)
+    k3d cluster list                                - Lista de clusters (Servers=Control plane | Agents=Worker node)
+    k3d cluster create {cluster-name} --no-lb       - Criação de um cluster com nome customizado e sem um load balancer
+    k3d cluster delete {cluster-name}               - Deleta o cluster com base no nome
+}
+
+2. k3d complete setup {
+
+    k3d cluster create {cluster-name} --servers {x} --agents {x}        - Criação de um cluster apontando a quantidade de Control Planes (servers) e worker nodes (agents)
+    > -p "8080:30000@loadbalancer"                                      - Adição de um bind port da 8080 para o loadbalancer nativo do k3d na porta padrão    
+}

@@ -96,3 +96,8 @@
     for_each                        - utiliza do set ou map para varrer e criar os resources
 
 }
+
+5. Provisioners {                   - utilizado para realizar configurações dentro das instancias criadas (utilizar em ultimo caso. ansible é próprio para isso e funciona bem melhor)
+
+    
+}
