@@ -133,6 +133,12 @@
 
             kubectl create configmap {name} --from-literal={NAME}="{VALUE}" --from-file {filename}
         }
+
+        secrets {
+
+            kubectl create secret {type} {name} --from-literal={NAME}="{VALUE}" --from-file {filename}
+            kubectl get secret {name} -o yaml
+        }
     }
 }
 
@@ -155,7 +161,56 @@
         
         - Lista Chave-Valor para armazenamento de dados NÃO-Sensíveis!!
         - Utilizado com a flag de arquivo para aplicações que necessitam de um arquivo de configuração (Ex.: Arquivos de configuração do Prometheus)
-        - 
+        - Não são atualizados automaticamente no deployment quando alterados, sendo necessário um delete dos pods para serem recriados com o configMap atualizado
+        - Na forma declarativa, não há necessidade do campo spec, e sim do campo "data:" {
+
+            data:
+              APP_NAME: "Value1"
+              APP_VERSION: "Value2"
+        } 
+
+        - Referência dentro do pod {
+
+            envFrom:
+            - configMapRef:
+                name: {configmap-name}
+                
+        }
+
+        - Caso as Keys do configMap sejam diferentes do que precisam ser usados dentro do container, é possível referenciar uma KEY personalizada associada a uma KEY dentro do ConfigMap{
+
+            env:
+              - name: {env_name}
+                valueFrom:
+                  configMapKeyRef:
+                    name: {cm-name}
+                    key: {cm-key}
+        }
+    }
+
+    Secrets{
+
+        - Utilizado para armazenar dados sensíveis (Strings de conexão de banco, Tokens, senhas etc)
+        - Também são armazenados em chave-Valor
+        - A principio não é utilizado de forma nativa, pois o valor é encodado em Base64. Fazendo-se necessário a utilização de uma ferramenta de Vault para armazenar as chaves
+        - Para ser declarado no manifesto, é necessário converter o valor do registro para Base64 (Não recomendado, por ser um valor sensível, não faz sentido ter ele declarado em um arquivo xD)
+
+        - Definição via Referência{
+
+            envFrom:
+              secretRef:
+                name: {secret-name}
+        }
+
+        - Definição por valor{
+
+            env:
+              - mame: {env_name}
+                valueFrom:
+                  secreKeyRef:
+                    name: {secret-name}
+                    key: {secret-key}
+        }
 
     }
 }
