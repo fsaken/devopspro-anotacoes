@@ -128,7 +128,34 @@
 
             kubectl get endpoinslices
         }
-    }
-    
 
+        configmap {
+
+            kubectl create configmap {name} --from-literal={NAME}="{VALUE}" --from-file {filename}
+        }
+    }
+}
+
+4. Gerenciamento de Configuração {
+
+    variáveis de ambiente{
+
+        - arquivo .env não é recomendada (https://12factor.net/)
+        - o ideal é a utilização de variaveis de ambiente a nivel de SO
+
+        - declarado no manifesto dentro dos atributos do container da seguinte forma (não recomendado em prod){
+            
+            env:
+              - name: {ENV_NAME}
+                value: {ENV_VALUE}
+        } 
+    }
+
+    ConfigMaps{
+        
+        - Lista Chave-Valor para armazenamento de dados NÃO-Sensíveis!!
+        - Utilizado com a flag de arquivo para aplicações que necessitam de um arquivo de configuração (Ex.: Arquivos de configuração do Prometheus)
+        - 
+
+    }
 }
